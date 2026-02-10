@@ -9,6 +9,7 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="styles.css">
 	</head>
+
 	<body>
 		<div class="news-bar">
 			<div class="news-label">LIVE</div>
@@ -25,21 +26,27 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="card">
 			<div class="badge" id="statusBadge">
 				<span class="live-dot"></span> Connecting
 			</div>
+
 			<a href="./" class="home-btn" title="Go to Home">
-			<i class="fas fa-house"></i>
+				<i class="fas fa-house"></i>
 			</a>
+
 			<h2 class="title">
 				<img src="./assets/RpMC-Transparent.png" class="title-logo" alt="RpMC Logo">
 				RANGPUR MEDICAL COLLEGE
 			</h2>
+
 			<div class="subtitle">RpMC-55 · Registration Portal</div>
+
 			<div id="content"></div>
 			<div id="notify"></div>
 		</div>
+
 		<script>
 			const API_URL="https://script.google.com/macros/s/AKfycby9VC0uWcuK23Uyq1VKv3dVxP-n3BLdCHlhsxIIFR19owSwV5o63gWRVdvXnbhQOvtaKg/exec";
 			const MIGRATED_URL="migration.html";
@@ -47,7 +54,6 @@
 			const content=document.getElementById("content");
 			const notify=document.getElementById("notify");
 			
-			/* ---------- STATUS BADGE ---------- */
 			function setBadge(text,mode="online"){
 			  const badge=document.getElementById("statusBadge");
 			  const color=mode==="offline"?"var(--offline)":"var(--accent)";
@@ -56,7 +62,6 @@
 			  badge.innerHTML=`<span class="live-dot"></span> ${text}`;
 			}
 			
-			/* ---------- API ---------- */
 			async function apiCall(action,data={}){
 			  const formData=new URLSearchParams();
 			  formData.append("action",action);
@@ -66,7 +71,6 @@
 			  return await res.json();
 			}
 			
-			/* ---------- INIT ---------- */
 			window.onload=async()=>{
 			  try{
 			    const state=await apiCall("getAppState");
@@ -83,7 +87,6 @@
 			  }
 			};
 			
-			/* ---------- FORM ---------- */
 			function renderRegistration(){
 			  content.innerHTML=`
 			    <div class="input-group"><label>Admission Roll Number</label><input id="rRoll" type="number" class="input" placeholder="e.g. 1803575"></div>
@@ -101,7 +104,6 @@
 			  document.getElementById("regBtn").onclick=handleRegister;
 			}
 			
-			/* ---------- REGISTER ---------- */
 			async function handleRegister(){
 			  const btn=document.getElementById("regBtn");
 			
@@ -152,7 +154,6 @@
 			  }
 			}
 			
-			/* ---------- ERROR HANDLING ---------- */
 			function helpUI(res){
 			  let extra="";
 			
@@ -170,7 +171,6 @@
 			  `;
 			}
 			
-			/* ---------- SUCCESS ---------- */
 			function successUI(name,ballot){
 			  return `
 			    <h3>Registration Complete</h3>
@@ -183,20 +183,18 @@
 			    <button class="button" style="background:transparent;border:1px solid var(--border);color:white" onclick="location.reload()">Done</button>`;
 			}
 			
-			/* ---------- ADMIN ---------- */
 			function adminContactUI(){
 			  return `
 			    <div style="margin-top:20px">
 			      <p class="subtitle">If you believe this is a mistake, contact admin:</p>
 			      <div style="display:flex;gap:14px;justify-content:center;margin-top:12px">
-			        <a href="https://facebook.com/sultanuttarik" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook fa-2x"></i></a>
-			        <a href="https://wa.me/8801761891504" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp fa-2x"></i></a>
-			        <a href="mailto:sultanuttarik@gmail.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope fa-2x"></i></a>
+			        <a href="https://facebook.com/sultanuttarik"><i class="fab fa-facebook fa-2x"></i></a>
+			        <a href="https://wa.me/8801761891504"><i class="fab fa-whatsapp fa-2x"></i></a>
+			        <a href="mailto:sultanuttarik@gmail.com"><i class="fas fa-envelope fa-2x"></i></a>
 			      </div>
 			    </div>`;
 			}
 			
-			/* ---------- MIGRATED ---------- */
 			function migratedUI(){
 			  return `
 			    <div class="migrated-box">
@@ -214,7 +212,6 @@
 			    </div>`;
 			}
 			
-			/* ---------- UTIL ---------- */
 			function copyBallot(){
 			  navigator.clipboard.writeText(ballotBox.innerText);
 			  showNotify("Ballot ID copied!",false);
@@ -227,13 +224,13 @@
 			  if(!err) setTimeout(()=>notify.style.display="none",4000);
 			}
 		</script>
-	</body>
-	<div id="page-loader">
-		<div class="loader-card">
-			<div class="loader-logo"></div>
-			<div class="loader-text">RpMC-55</div>
+
+		<!-- PAGE LOADER -->
+		<div id="page-loader">
+			<div class="loader-card">
+				<div class="loader-logo"></div>
+				<div class="loader-text">RpMC-55</div>
+			</div>
 		</div>
-	</div>
-
+	</body>
 </html>
-
