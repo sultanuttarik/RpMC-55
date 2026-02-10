@@ -1,4 +1,4 @@
-# <img src="./assets/RpMC-Transparent.png" alt="RpMC Logo" style="vertical-align: middle; height: 32px;"> RpMC-55 Registration Portal
+# <img src="./assets/RpMC-Transparent.png" alt="RpMC Logo" style="vertical-align: middle; height: 24px;"> RpMC-55 Registration Portal
 
 A modern, lightweight web-based registration system for **Rangpur Medical College (RpMC-55)** students.  
 This project handles both **directly selected students** and **migrated students**, with real-time verification via Google Apps Script.
