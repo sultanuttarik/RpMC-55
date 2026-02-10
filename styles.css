@@ -239,8 +239,9 @@ cursor:not-allowed;
 transform:none;
 }
 
-/* NOTIFY */
-#notify{
+/* NOTIFY (shared for #notify and #inlineNotify) */
+#notify,
+#inlineNotify{
 margin-top:22px;
 font-size:.9rem;
 padding:14px;
@@ -426,6 +427,7 @@ justify-content:center;
 z-index:99999;
 animation:loaderFadeOut .6s ease forwards;
 animation-delay:.9s;
+pointer-events:none;
 }
 
 @keyframes loaderFadeOut{
