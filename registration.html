@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Rangpur Medical College | RpMC-55</title>
+		<link rel="icon" href="favicon.png" type="image/png">
+		<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		<div class="news-bar">
+			<div class="news-label">LIVE</div>
+			<div class="news-viewport">
+				<div class="news-list">
+					<div class="news-item">Registration phase is currently LIVE</div>
+					<div class="news-item">Keep your Ballot ID safe</div>
+					<div class="news-item">Registration phase is currently LIVE</div>
+					<div class="news-item">Keep your Ballot ID safe</div>
+					<div class="news-item">Registration phase is currently LIVE</div>
+					<div class="news-item">Keep your Ballot ID safe</div>
+					<div class="news-item">Registration phase is currently LIVE</div>
+					<div class="news-item">Keep your Ballot ID safe</div>
+				</div>
+			</div>
+		</div>
+		<div class="card">
+			<div class="badge" id="statusBadge">
+				<span class="live-dot"></span> Connecting
+			</div>
+			<a href="./" class="home-btn" title="Go to Home">
+			<i class="fas fa-house"></i>
+			</a>
+			<h2 class="title">
+				<img src="./assets/RpMC-Transparent.png" class="title-logo" alt="RpMC Logo">
+				RANGPUR MEDICAL COLLEGE
+			</h2>
+			<div class="subtitle">RpMC-55 · Registration Portal</div>
+			<div id="content"></div>
+			<div id="notify"></div>
+		</div>
+		<script>
+			const API_URL="https://script.google.com/macros/s/AKfycbw_Avja9l954KXJdqW291uxJ9EBezpLbbviNrq5K6N-pi4QPI6tl3PtHwXr11RdoY8WOQ/exec";
+			const MIGRATED_URL="migration.html";
+			
+			const content=document.getElementById("content");
+			const notify=document.getElementById("notify");
+			
+			/* ---------- STATUS BADGE ---------- */
+			function setBadge(text,mode="online"){
+			  const badge=document.getElementById("statusBadge");
+			  const color=mode==="offline"?"var(--offline)":"var(--accent)";
+			  badge.style.color=color;
+			  badge.style.borderColor=color;
+			  badge.innerHTML=`<span class="live-dot"></span> ${text}`;
+			}
+			
+			/* ---------- API ---------- */
+			async function apiCall(action,data={}){
+			  const formData=new URLSearchParams();
+			  formData.append("action",action);
+			  Object.keys(data).forEach(k=>formData.append(k,data[k]));
+			  const res=await fetch(API_URL,{method:"POST",body:formData});
+			  if(!res.ok) throw new Error("Network error");
+			  return await res.json();
+			}
+			
+			/* ---------- INIT ---------- */
+			window.onload=async()=>{
+			  try{
+			    const state=await apiCall("getAppState");
+			    if(state.Registration==="OPEN"){
+			      setBadge("Registration Open");
+			      renderRegistration();
+			    }else{
+			      setBadge("Registration Closed","offline");
+			      content.innerHTML="<p class='subtitle'>Registration is currently closed.</p>";
+			    }
+			  }catch{
+			    setBadge("OFFLINE","offline");
+			    content.innerHTML="<p class='subtitle'>SYSTEM OFFLINE. Please check connection.</p>";
+			  }
+			};
+			
+			/* ---------- FORM ---------- */
+			function renderRegistration(){
+			  content.innerHTML=`
+			    <div class="input-group"><label>Admission Roll Number</label><input id="rRoll" type="number" class="input" placeholder="e.g. 1803575"></div>
+			    <div class="input-group"><label>Merit Position</label><input id="rPos" type="number" class="input" placeholder="e.g. 2050"></div>
+			    <div class="input-group"><label>Merit Score</label><input id="rScore" type="number" step="0.01" class="input" placeholder="e.g. 178.75"></div>
+			    <div class="input-group"><label>Email Address</label><input id="rEmail" type="email" class="input" placeholder="e.g. username@gmail.com"></div>
+			    <div class="input-group"><label>Blood Group</label>
+			      <select id="rBG" class="input">
+			        <option value="" disabled selected>Select Blood Group</option>
+			        <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+			        <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+			      </select>
+			    </div>
+			    <button class="button" id="regBtn">Verify & Register</button>`;
+			  document.getElementById("regBtn").onclick=handleRegister;
+			}
+			
+			/* ---------- REGISTER ---------- */
+			async function handleRegister(){
+			  const btn=document.getElementById("regBtn");
+			
+			  const roll=rRoll.value.trim();
+			  const pos=rPos.value.trim();
+			  const scoreRaw=rScore.value.trim();
+			  const email=rEmail.value.trim();
+			  const bg=rBG.value;
+			
+			  if(!roll||!pos||!scoreRaw||!bg){
+			    showNotify("Please fill all required fields.",true);
+			    return;
+			  }
+			
+			  const score=parseFloat(scoreRaw);
+			  if(isNaN(score)){
+			    showNotify("Invalid merit score.",true);
+			    return;
+			  }
+			
+			  if(email && !email.toLowerCase().endsWith("@gmail.com")){
+			    showNotify("Only gmail.com email addresses are allowed.",true);
+			    return;
+			  }
+			
+			  btn.disabled=true;
+			  btn.innerText="Processing...";
+			  notify.style.display="none";
+			
+			  try{
+			    const res=await apiCall("register",{
+			      rollNo:roll,
+			      mPos:pos,
+			      mScore:score.toFixed(2),
+			      email:email,
+			      bg:bg
+			    });
+			
+			    if(res.status==="Success"){
+			      content.innerHTML=successUI(res.name,res.ballotID);
+			    }else{
+			      content.innerHTML=helpUI(res);
+			    }
+			  }catch{
+			    showNotify("Server unreachable. Try again.",true);
+			    btn.disabled=false;
+			    btn.innerText="Verify & Register";
+			  }
+			}
+			
+			/* ---------- ERROR HANDLING ---------- */
+			function helpUI(res){
+			  let extra="";
+			
+			  if(res.code==="MIGRATED_STUDENT"){
+			    extra=migratedUI();
+			  }else if(res.code==="ALREADY_REGISTERED"){
+			    extra=adminContactUI();
+			  }
+			
+			  return `
+			    <h3>Action Required</h3>
+			    <p class="subtitle">${res.message}</p>
+			    ${extra}
+			    <button class="button" style="margin-top:20px" onclick="location.reload()">Go Back</button>
+			  `;
+			}
+			
+			/* ---------- SUCCESS ---------- */
+			function successUI(name,ballot){
+			  return `
+			    <h3>Registration Complete</h3>
+			    <p class="subtitle">Welcome, ${name}</p>
+			    <div style="border:2px dashed var(--accent);padding:16px;border-radius:14px;margin:22px 0">
+			      <p style="font-size:.8rem;color:var(--muted)">Your Unique Ballot ID</p>
+			      <div id="ballotBox" style="font-size:1.5rem;font-weight:800">${ballot}</div>
+			    </div>
+			    <button class="button" onclick="copyBallot()">Copy Ballot ID</button>
+			    <button class="button" style="background:transparent;border:1px solid var(--border);color:white" onclick="location.reload()">Done</button>`;
+			}
+			
+			/* ---------- ADMIN ---------- */
+			function adminContactUI(){
+			  return `
+			    <div style="margin-top:20px">
+			      <p class="subtitle">If you believe this is a mistake, contact admin:</p>
+			      <div style="display:flex;gap:14px;justify-content:center;margin-top:12px">
+			        <a href="https://facebook.com/sultanuttarik" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook fa-2x"></i></a>
+			        <a href="https://wa.me/8801761891504" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp fa-2x"></i></a>
+			        <a href="mailto:sultanuttarik@gmail.com"><i class="fas fa-envelope fa-2x"></i></a>
+			      </div>
+			    </div>`;
+			}
+			
+			/* ---------- MIGRATED ---------- */
+			function migratedUI(){
+			  return `
+			    <div class="migrated-box">
+			      <div class="migrated-icon">
+			        <i class="fas fa-university"></i>
+			      </div>
+			      <h3>Migrated Student Registration</h3>
+			      <p class="subtitle">
+			        <i class="fas fa-circle-info" style="font-size:.85rem;color:var(--muted)"></i>
+			        This roll number belongs to a migrated student and is not part of the primary batch database.
+			      </p>
+			      <a href="${MIGRATED_URL}" target="_blank" rel="noopener noreferrer" class="button migrated-btn">
+			        Continue as Migrated Student
+			      </a>
+			    </div>`;
+			}
+			
+			/* ---------- UTIL ---------- */
+			function copyBallot(){
+			  navigator.clipboard.writeText(ballotBox.innerText);
+			  showNotify("Ballot ID copied!",false);
+			}
+			
+			function showNotify(msg,err){
+			  notify.innerText=msg;
+			  notify.className=err?"notify-error":"notify-success";
+			  notify.style.display="block";
+			  if(!err) setTimeout(()=>notify.style.display="none",4000);
+			}
+		</script>
+	</body>
+	<div id="page-loader">
+		<div class="loader-card">
+			<div class="loader-logo"></div>
+			<div class="loader-text">RpMC-55</div>
+		</div>
+	</div>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Migrated Status | RpMC-55</title>
+		<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		<div class="card">
+			<!-- HOME -->
+			<a href="./" class="home-btn" title="Go to Home">
+			<i class="fas fa-house"></i>
+			</a>
+			<!-- TITLE -->
+			<h2 class="title">
+				<img src="./assets/RpMC-Transparent.png" class="title-logo" alt="RpMC Logo">
+				RANGPUR MEDICAL COLLEGE
+			</h2>
+			<div class="subtitle">
+				RpMC-55 · Migrated Student Application Status
+			</div>
+			<h2 class="title">Migrated Application Status</h2>
+			<p class="subtitle">
+				Enter your admission roll number to check the current status of your
+				migrated registration request.
+			</p>
+			<!-- INPUT -->
+			<div class="input-group">
+				<label>Admission Roll Number</label>
+				<input id="roll" class="input" type="number" placeholder="e.g. 1803575">
+			</div>
+			<!-- ACTION -->
+			<button class="button" id="checkBtn">
+			Check Status
+			</button>
+			<!-- RESULT -->
+			<div id="result" style="margin-top:20px"></div>
+		</div>
+		<script>
+			const API_URL = "https://script.google.com/macros/s/AKfycbw_Avja9l954KXJdqW291uxJ9EBezpLbbviNrq5K6N-pi4QPI6tl3PtHwXr11RdoY8WOQ/exec";
+			
+			const btn = document.getElementById("checkBtn");
+			const resultBox = document.getElementById("result");
+			
+			btn.onclick = async () => {
+			  const roll = document.getElementById("roll").value.trim();
+			
+			  if (!roll) {
+			    resultBox.innerHTML = `<p class="subtitle">Please enter a roll number.</p>`;
+			    return;
+			  }
+			
+			  btn.disabled = true;
+			  btn.innerText = "Checking...";
+			  resultBox.innerHTML = "";
+			
+			  try {
+			    const res = await fetch(API_URL, {
+			      method: "POST",
+			      body: new URLSearchParams({
+			        action: "checkMigratedStatus",
+			        rollNo: roll
+			      })
+			    }).then(r => r.json());
+			
+			    if (res.status === "Success") {
+			      const status = res.result.approval;
+			      let color = "var(--muted)";
+			
+			      if (status === "APPROVED") color = "var(--accent)";
+			      if (status === "REJECTED") color = "var(--offline)";
+			      if (status === "PENDING") color = "#facc15";
+			
+			      resultBox.innerHTML = `
+			        <div class="migrated-box">
+			          <p style="font-weight:600">
+			            Application Status:
+			            <span style="color:${color}">${status}</span>
+			          </p>
+			          <p class="subtitle">
+			            ${res.result.notes || "No remarks from the administration yet."}
+			          </p>
+			        </div>
+			      `;
+			    } else {
+			      resultBox.innerHTML = `
+			        <p class="subtitle">
+			          ${res.message}
+			        </p>
+			      `;
+			    }
+			  } catch {
+			    resultBox.innerHTML = `
+			      <p class="subtitle">
+			        Unable to connect to the server. Please try again later.
+			      </p>
+			    `;
+			  } finally {
+			    btn.disabled = false;
+			    btn.innerText = "Check Status";
+			  }
+			};
+		</script>
+	</body>
+	<div id="page-loader">
+		<div class="loader-card">
+			<div class="loader-logo"></div>
+			<div class="loader-text">RpMC-55</div>
+		</div>
+	</div>
+</html>

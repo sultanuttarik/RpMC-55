@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Rangpur Medical College | Migrated Student</title>
+		<link rel="icon" href="favicon.png" type="image/png">
+		<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;800&display=swap" rel="stylesheet">
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body>
+		<!-- NEWS BAR -->
+		<div class="news-bar">
+			<div class="news-label">LIVE</div>
+			<div class="news-viewport">
+				<div class="news-list">
+					<div class="news-item">Migrated Student Registration</div>
+					<div class="news-item">Admin verification required</div>
+					<div class="news-item">Ensure all information is correct</div>
+					<div class="news-item">Migrated Student Registration</div>
+					<div class="news-item">Migrated Student Registration</div>
+					<div class="news-item">Admin verification required</div>
+					<div class="news-item">Ensure all information is correct</div>
+					<div class="news-item">Migrated Student Registration</div>
+				</div>
+			</div>
+		</div>
+		<!-- MAIN CARD -->
+		<div class="card">
+			<!-- HOME BUTTON -->
+			<a href="./" class="home-btn" title="Go to Home">
+			<i class="fas fa-house"></i>
+			</a>
+			<!-- TITLE -->
+			<h2 class="title">
+				<img src="./assets/RpMC-Transparent.png" class="title-logo" alt="RpMC Logo">
+				RANGPUR MEDICAL COLLEGE
+			</h2>
+			<div class="subtitle">
+				RpMC-55 · Migrated Student Registration Form
+			</div>
+			<!-- CONTENT -->
+			<div id="content">
+				<!-- INFO -->
+				<div class="migrated-box">
+					<p class="subtitle">
+						<i class="fa-solid fa-circle-info info-icon"></i>
+						This form is for students who have been
+						<strong>migrated from other medical colleges</strong>.
+						Your submission will be reviewed by the administration
+						before approval.
+					</p>
+				</div>
+				<br>
+				<!-- FORM -->
+				<div class="input-group">
+					<label>Admission Roll Number</label>
+					<input id="rollNo" type="number" class="input" placeholder="e.g. 1803575">
+				</div>
+				<div class="input-group">
+					<label>Full Name (as per admit card)</label>
+					<input id="fullName" type="text" class="input" placeholder="e.g. MD. JAHANGIR ALAM">
+				</div>
+				<div class="input-group">
+					<label>Previous Medical College</label>
+					<input id="college" type="text" class="input" placeholder="e.g. Dhaka Medical College">
+				</div>
+				<div class="input-group">
+					<label>Merit Position</label>
+					<input id="mPos" type="number" class="input" placeholder="e.g. 2050">
+				</div>
+				<div class="input-group">
+					<label>Merit Score</label>
+					<input id="mScore" type="number" step="0.01" class="input" placeholder="e.g. 178.75">
+				</div>
+				<div class="input-group">
+					<label>Email Address</label>
+					<input id="email" type="email" class="input" placeholder="username@gmail.com">
+				</div>
+				<div class="input-group">
+					<label>Blood Group</label>
+					<select id="bg" class="input">
+						<option value="" disabled selected>Select Blood Group</option>
+						<option>A+</option>
+						<option>A-</option>
+						<option>B+</option>
+						<option>B-</option>
+						<option>O+</option>
+						<option>O-</option>
+						<option>AB+</option>
+						<option>AB-</option>
+					</select>
+				</div>
+				<!-- NOTICE -->
+				<p style="font-size:.75rem;color:var(--muted);margin:12px 0">
+					Submitted information must be accurate.
+					Any false or inconsistent data may result in rejection.
+				</p>
+				<!-- SUBMIT -->
+				<button class="button" id="submitBtn">
+				Submit for Admin Verification
+				</button>
+			</div>
+		</div>
+		<script>
+			const API_URL="https://script.google.com/macros/s/AKfycbw_Avja9l954KXJdqW291uxJ9EBezpLbbviNrq5K6N-pi4QPI6tl3PtHwXr11RdoY8WOQ/exec";
+			
+			document.getElementById("submitBtn").onclick = async () => {
+			  const btn = document.getElementById("submitBtn");
+			  btn.disabled = true;
+			  btn.innerText = "Submitting...";
+			
+			  const payload = {
+			    action: "submitMigrated",
+			    rollNo: document.getElementById("rollNo").value.trim(),
+			    name: document.getElementById("fullName").value.trim(),
+			    college: document.getElementById("college").value.trim(),
+			    mPos: document.getElementById("mPos").value.trim(),
+			    mScore: document.getElementById("mScore").value.trim(),
+			    email: document.getElementById("email").value.trim(),
+			    bg: document.getElementById("bg").value
+			  };
+			
+			  try {
+			    const res = await fetch(API_URL, {
+			      method: "POST",
+			      body: new URLSearchParams(payload)
+			    }).then(r => r.json());
+			
+			    if (res.status === "Success") {
+			      document.getElementById("content").innerHTML = `
+			        <h3>Submission Successful</h3>
+			        <p class="subtitle">
+			          Your migrated registration request has been submitted successfully.
+					  <br>
+			          Please check your status later using your roll number.
+			        </p>
+					<br>
+			        <a href="migrated-status.html" class="button">
+			          Check Application Status
+			        </a>
+			      `;
+			    } else {
+			      alert(res.message);
+			      btn.disabled = false;
+			      btn.innerText = "Submit for Admin Verification";
+			    }
+			  } catch (err) {
+			    alert("Unable to submit. Please check your internet connection.");
+			    btn.disabled = false;
+			    btn.innerText = "Submit for Admin Verification";
+			  }
+			};
+		</script>
+	</body>
+	<div id="page-loader">
+		<div class="loader-card">
+			<div class="loader-logo"></div>
+			<div class="loader-text">RpMC-55</div>
+		</div>
+	</div>
+</html>
