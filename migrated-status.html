@@ -8,37 +8,46 @@
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="styles.css">
 	</head>
+
 	<body>
 		<div class="card">
 			<!-- HOME -->
 			<a href="./" class="home-btn" title="Go to Home">
-			<i class="fas fa-house"></i>
+				<i class="fas fa-house"></i>
 			</a>
+
 			<!-- TITLE -->
 			<h2 class="title">
 				<img src="./assets/RpMC-Transparent.png" class="title-logo" alt="RpMC Logo">
 				RANGPUR MEDICAL COLLEGE
 			</h2>
+
 			<div class="subtitle">
 				RpMC-55 · Migrated Student Application Status
 			</div>
+
 			<h2 class="title">Migrated Application Status</h2>
+
 			<p class="subtitle">
 				Enter your admission roll number to check the current status of your
 				migrated registration request.
 			</p>
+
 			<!-- INPUT -->
 			<div class="input-group">
 				<label>Admission Roll Number</label>
 				<input id="roll" class="input" type="number" placeholder="e.g. 1803575">
 			</div>
+
 			<!-- ACTION -->
 			<button class="button" id="checkBtn">
-			Check Status
+				Check Status
 			</button>
+
 			<!-- RESULT -->
 			<div id="result" style="margin-top:20px"></div>
 		</div>
+
 		<script>
 			const API_URL = "https://script.google.com/macros/s/AKfycby9VC0uWcuK23Uyq1VKv3dVxP-n3BLdCHlhsxIIFR19owSwV5o63gWRVdvXnbhQOvtaKg/exec";
 			
@@ -104,11 +113,13 @@
 			  }
 			};
 		</script>
-	</body>
-	<div id="page-loader">
-		<div class="loader-card">
-			<div class="loader-logo"></div>
-			<div class="loader-text">RpMC-55</div>
+
+		<!-- PAGE LOADER -->
+		<div id="page-loader">
+			<div class="loader-card">
+				<div class="loader-logo"></div>
+				<div class="loader-text">RpMC-55</div>
+			</div>
 		</div>
-	</div>
+	</body>
 </html>
