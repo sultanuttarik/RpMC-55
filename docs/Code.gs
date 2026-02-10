@@ -110,7 +110,7 @@ function registerStudent(p) {
     return json({
       status: "Fail",
       code: "MERIT_MISMATCH",
-      message: "The provided merit information does not match our records."
+      message: "The provided information does not match our records."
     });
   }
 
